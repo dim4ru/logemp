@@ -1,4 +1,4 @@
 <?php
-header("Location: login.php");
+header("Location: client/client_login_handler.php");
 exit();
 ?>
