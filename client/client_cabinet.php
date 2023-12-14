@@ -63,26 +63,36 @@ if (!isset($_SESSION['tel'])) {
         echo <<<HTML
         <form action="client_insert_parcel_handler.php" method="POST">
             <label for="sender_name">Отправитель:</label><br>
-            <input type="text" id="sender" name="sender"><br>
+            <input type="text" id="sender_name" name="sender_name" placeholder="Фамилия Имя Отчество" required><br>
         
             <label for="receiver_name">Получатель:</label><br>
-            <input type="text" id="recipient" name="recipient"><br>
+            <input type="text" id="receiver_name" name="receiver_name" placeholder="Фамилия Имя Отчество" required><br>
         
-            <label for="departure_address">Адрес отправления:</label><br>
-            <input type="text" id="departure_address" name="departure_address" class="wide-input"><br>
+            <br>
+            <label for="delivery_address">Адрес вручения для доставки на дом:</label>
+            <input type="text" id="delivery_address" name="delivery_address" placeholder="напр. улица 70 лет Октября, 3/1, кв 101, Омск, 644074"><br>
+            <label for="destination_office"><b>или</b><br>Выбрать отделение для самовывоза:</label>
+            <select id="destination_office" name="destination_office">
+HTML;
+
+        foreach (getOfficesList($conn) as $address) {
+            echo "<option value=\"$address\">$address</option>";
+        }
+
+        echo <<<HTML
+            </select>
+            <br><br>
         
-            <label for="delivery_address">Адрес вручения:</label><br>
-            <input type="text" id="delivery_address" name="delivery_address" class="wide-input"><br>
+            <label for="weight">Вес, кг (оставьте пустым, если не знаете):</label><br>
+            <input type="number" id="weight" name="weight" ><br>
         
-            <input type="checkbox" id="pickup" name="pickup" value="yes">
-            <label for="pickup">Забрать из дома (+ 300 р.)</label><br>
+            <label for="volume">Объем, м2 (оставьте пустым, если не знаете):</label><br>
+            <input type="number" id="volume" name="volume"><br>
         
-            <input type="checkbox" id="delivery" name="delivery" value="yes">
-            <label for="delivery">Доставить на дом (+ 300 р.)</label><br><br>
-        
-            <input type="submit" value="Отправить">
+            <input type="submit" value="Создать заявку">
         </form>
 HTML;
+
 
     } else {
         echo "Клиент не найден";
@@ -112,5 +122,31 @@ function receiverNameById ($conn, $receiver_id)
     if (mysqli_num_rows($result_receiver_name) > 0) {
         $receiver_data = mysqli_fetch_assoc($result_receiver_name);
         return $receiver_name = $receiver_data["name"];
+    }
+}
+
+function getOfficesList($conn)
+{
+    // Формируем запрос к базе данных
+    $sql = "SELECT address FROM Offices WHERE 1";
+    $result = $conn->query($sql);
+
+    // Проверяем, есть ли результаты
+    if ($result->num_rows > 0) {
+        // Инициализируем переменную для хранения списка адресов
+        $addresses = array();
+
+        // Получаем каждую строку результата и помещаем адрес в массив
+        while($row = $result->fetch_assoc()) {
+            $addresses[] = $row["address"];
+        }
+
+        // Выводим список адресов для проверки
+        array_unshift($addresses, "Не выбрано");
+        return $addresses;
+
+        // Теперь $addresses содержит список адресов из базы данных
+    } else {
+        echo "0 результатов";
     }
 }
