@@ -52,7 +52,7 @@ if (!isset($_SESSION['tel'])) {
                 $pickup_symbol = ($row_parcels["pickup"] == 1) ? "✔️" : "❌";
                 $delivery_symbol = ($row_parcels["delivery"] == 1) ? "✔️" : "❌";
                 $shipped = ($row_parcels["shipped"] != NULL) ? $row_parcels["shipped"] : "-";
-                echo "<tr><td>" . $row_parcels["id"] . "</td><td>" . $row_parcels["status"] . "</td><td>" . $row_parcels["weight"] . "</td><td>" . $row_parcels["volume"] . "</td><td>" . senderNameById($conn, $row_parcels["sender_id"]) . "</td><td>" . receiverNameById($conn, $row_parcels["receiver_id"]) . "</td><td>" . $row_parcels["address_from"] . "</td><td>" . $row_parcels["address_to"] . "</td><td>" . $row_parcels["sent"] . "</td><td>" . $shipped . "</td><td>" . $pickup_symbol . "</td><td>" . $delivery_symbol . "</td><td>" . $row_parcels["price"] . "</td></tr>";
+                echo "<tr><td>" . $row_parcels["id"] . "</td><td>" . $row_parcels["status"] . "</td><td>" . $row_parcels["weight"] . "</td><td>" . $row_parcels["volume"] . "</td><td>" . clientNameById($conn, $row_parcels["sender_id"]) . "</td><td>" . clientNameById($conn, $row_parcels["receiver_id"]) . "</td><td>" . $row_parcels["address_from"] . "</td><td>" . $row_parcels["address_to"] . "</td><td>" . $row_parcels["sent"] . "</td><td>" . $shipped . "</td><td>" . $pickup_symbol . "</td><td>" . $delivery_symbol . "</td><td>" . $row_parcels["price"] . "</td></tr>";
             }
             echo "</table>";
         } else {
@@ -62,11 +62,23 @@ if (!isset($_SESSION['tel'])) {
         echo "<h3>Новая посылка</h3>";
         echo <<<HTML
         <form action="client_insert_parcel_handler.php" method="POST">
-            <label for="sender_name">Отправитель:</label><br>
-            <input type="text" id="sender_name" name="sender_name" placeholder="Фамилия Имя Отчество" required><br>
+            <label for="sender_name">ФИО отправителя:</label><br>
+            <input type="text" id="sender_name" name="sender_name" value="
+HTML;
+        echo clientNameById($conn, $clientId);
+        echo <<<HTML
+            " readonly required><br>
+            <label for="sender_tel">Номер телефона отправителя:</label><br>
+            <input type="tel" id="sender_tel" name="sender_tel" maxlength="10" value="
+HTML;
+        echo $_SESSION['tel'];
+        echo <<<HTML
+            " readonly required><br>
         
-            <label for="receiver_name">Получатель:</label><br>
+            <label for="receiver_name">ФИО получателя:</label><br>
             <input type="text" id="receiver_name" name="receiver_name" placeholder="Фамилия Имя Отчество" required><br>
+            <label for="receiver_tel">Номер телефона получателя:</label><br>
+            <input type="tel" id="receiver_tel" name="receiver_tel" placeholder="Без +7 (напр.9991234566)" maxlength="10"><br>
         
             <br>
             <label for="delivery_address">Адрес вручения для доставки на дом:</label>
@@ -88,7 +100,9 @@ HTML;
         
             <label for="volume">Объем, м2 (оставьте пустым, если не знаете):</label><br>
             <input type="number" id="volume" name="volume"><br>
-        
+            
+            <br>
+            
             <input type="submit" value="Создать заявку">
         </form>
 HTML;
@@ -102,9 +116,9 @@ HTML;
     $conn->close();
 }
 
-function senderNameById ($conn, $sender_id)
+function clientNameById ($conn, $_client_id)
 {
-    $sql_sender_name = "SELECT name FROM Clients WHERE id = '$sender_id'";
+    $sql_sender_name = "SELECT name FROM Clients WHERE id = '$_client_id'";
     $result_sender_name = $conn->query($sql_sender_name);
     // Предполагается, что $result_sender_name содержит результат вашего запроса
     if (mysqli_num_rows($result_sender_name) > 0) {
