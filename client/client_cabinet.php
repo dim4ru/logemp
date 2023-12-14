@@ -67,13 +67,15 @@ if (!isset($_SESSION['tel'])) {
 HTML;
         echo clientNameById($conn, $clientId);
         echo <<<HTML
-            " readonly required><br>
+"readonly required><br>
             <label for="sender_tel">Номер телефона отправителя:</label><br>
             <input type="tel" id="sender_tel" name="sender_tel" maxlength="10" value="
 HTML;
         echo $_SESSION['tel'];
         echo <<<HTML
-            " readonly required><br>
+" readonly required><br>
+            <label for="pickup_address">Адрес, откуда забрать посылку:</label>
+            <input type="text" id="pickup_address" name="pickup_address" placeholder="напр. улица 70 лет Октября, 3/1, кв 101, Омск, 644074"><br>
         
             <label for="receiver_name">ФИО получателя:</label><br>
             <input type="text" id="receiver_name" name="receiver_name" placeholder="Фамилия Имя Отчество" required><br>
@@ -96,10 +98,10 @@ HTML;
             <br><br>
         
             <label for="weight">Вес, кг (оставьте пустым, если не знаете):</label><br>
-            <input type="number" id="weight" name="weight" ><br>
+            <input type="number" step="0.001" id="weight" name="weight" ><br>
         
             <label for="volume">Объем, м2 (оставьте пустым, если не знаете):</label><br>
-            <input type="number" id="volume" name="volume"><br>
+            <input type="number" step="0.001" id="volume" name="volume"><br>
             
             <br>
             
@@ -123,7 +125,7 @@ function clientNameById ($conn, $_client_id)
     // Предполагается, что $result_sender_name содержит результат вашего запроса
     if (mysqli_num_rows($result_sender_name) > 0) {
         $sender_data = mysqli_fetch_assoc($result_sender_name);
-        return $sender_name = $sender_data["name"];
+        return $sender_data["name"];
         // Теперь $sender_name содержит имя отправителя
     }
 }
