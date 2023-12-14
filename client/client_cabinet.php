@@ -44,12 +44,12 @@ if (!isset($_SESSION['tel'])) {
         // Проверяем, были ли найдены посылки
         if ($result_parcels->num_rows > 0) {
             // Выводим таблицу с полями id, status, weight, volume, sender_id, reciever_id, sent, shipped, pickup, delivery, price
-            echo "<table><tr><th>ID посылки</th><th>Статус</th><th>Вес, кг</th><th>Объем, кг</th><th>Отправитель</th><th>Получатель</th><th>Передано в доставку</th><th>Вручено</th><th>Забрать</th><th>Доставить</th><th>Стоимость, RUB</th></tr>";
+            echo "<table><tr><th>ID посылки</th><th>Статус</th><th>Вес, кг</th><th>Объем, кг</th><th>Отправитель</th><th>Получатель</th><th>Адрес отправления</th><th>Адрес вручения</th><th>Передано в доставку</th><th>Вручено</th><th>Забрать</th><th>Доставить</th><th>Стоимость, RUB</th></tr>";
             while($row_parcels = $result_parcels->fetch_assoc()) {
                 $pickup_symbol = ($row_parcels["pickup"] == 1) ? "✔️" : "❌";
                 $delivery_symbol = ($row_parcels["delivery"] == 1) ? "✔️" : "❌";
                 $shipped = ($row_parcels["shipped"] != NULL) ? $row_parcels["shipped"] : "-";
-                echo "<tr><td>" . $row_parcels["id"] . "</td><td>" . $row_parcels["status"] . "</td><td>" . $row_parcels["weight"] . "</td><td>" . $row_parcels["volume"] . "</td><td>" . senderNameById($conn, $row_parcels["sender_id"]) . "</td><td>" . recieverNameById($conn, $row_parcels["reciever_id"]) . "</td><td>" . $row_parcels["sent"] . "</td><td>" . $shipped . "</td><td>" . $pickup_symbol . "</td><td>" . $delivery_symbol . "</td><td>" . $row_parcels["price"] . "</td></tr>";
+                echo "<tr><td>" . $row_parcels["id"] . "</td><td>" . $row_parcels["status"] . "</td><td>" . $row_parcels["weight"] . "</td><td>" . $row_parcels["volume"] . "</td><td>" . senderNameById($conn, $row_parcels["sender_id"]) . "</td><td>" . recieverNameById($conn, $row_parcels["reciever_id"]) . "</td><td>" . $row_parcels["address_from"] . "</td><td>" . $row_parcels["address_to"] . "</td><td>" . $shipped . "</td><td>" . $shipped . "</td><td>" . $row_parcels["sent"] . "</td><td>" . $shipped . "</td><td>" . $pickup_symbol . "</td><td>" . $delivery_symbol . "</td><td>" . $row_parcels["price"] . "</td></tr>";
             }
             echo "</table>";
         } else {
