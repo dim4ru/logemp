@@ -12,6 +12,15 @@
     input[type=text] {
         width: 500px;
     }
+    .header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .logout {
+        margin-left: auto;
+    }
 </style>
 
 <?php
@@ -22,7 +31,7 @@ if (!isset($_SESSION['tel'])) {
     header("Location: client_login.php");
 } else {
     $tel = $_SESSION['tel'];
-    echo "<h2>Личный кабинет клиента по номеру $tel</h2>";
+    echo "<div class='header'><h2>Личный кабинет клиента по номеру $tel</h2><a class='logout' href='client_logout.php'>Выход</a></div>";
 
     // Проверяем соединение
     if ($conn->connect_error) {
