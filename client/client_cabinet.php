@@ -25,6 +25,7 @@
 
 <?php
 include "../connection.php";
+include "../Bill.php";
 session_start();
 if (!isset($_SESSION['tel'])) {
     // Сессия не содержит информацию о пользователе
@@ -61,12 +62,14 @@ if (!isset($_SESSION['tel'])) {
                 $pickup_symbol = ($row_parcels["pickup"] == 1) ? "✔️" : "❌";
                 $delivery_symbol = ($row_parcels["delivery"] == 1) ? "✔️" : "❌";
                 $shipped = ($row_parcels["shipped"] != NULL) ? $row_parcels["shipped"] : "-";
-                echo "<tr><td>" . $row_parcels["id"] . "</td><td>" . $row_parcels["status"] . "</td><td>" . $row_parcels["weight"] . "</td><td>" . $row_parcels["volume"] . "</td><td>" . clientNameById($conn, $row_parcels["sender_id"]) . "</td><td>" . clientNameById($conn, $row_parcels["receiver_id"]) . "</td><td>" . $row_parcels["address_from"] . "</td><td>" . $row_parcels["address_to"] . "</td><td>" . $row_parcels["sent"] . "</td><td>" . $shipped . "</td><td>" . $pickup_symbol . "</td><td>" . $delivery_symbol . "</td><td>" . $row_parcels["price"] . "</td></tr>";
+                $sent = ($row_parcels["sent"] != NULL) ? $row_parcels["sent"] : "-";
+                echo "<tr><td>" . $row_parcels["id"] . "</td><td>" . $row_parcels["status"] . "</td><td>" . $row_parcels["weight"] . "</td><td>" . $row_parcels["volume"] . "</td><td>" . clientNameById($conn, $row_parcels["sender_id"]) . "</td><td>" . clientNameById($conn, $row_parcels["receiver_id"]) . "</td><td>" . $row_parcels["address_from"] . "</td><td>" . $row_parcels["address_to"] . "</td><td>" . $sent . "</td><td>" . $shipped . "</td><td>" . $pickup_symbol . "</td><td>" . $delivery_symbol . "</td><td>" . $row_parcels["price"] . "</td></tr>";
             }
             echo "</table>";
         } else {
             echo "У вас нет входящих или исходящих посылок.";
         }
+
 
         echo "<h3>Новая посылка</h3>";
         echo <<<HTML

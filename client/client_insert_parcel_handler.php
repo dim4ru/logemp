@@ -1,5 +1,6 @@
 <?php
 include "../connection.php";
+include "../Bill.php";
 
 // Подключение к базе данных - $conn необходимо определить заранее
 
@@ -20,14 +21,33 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
     $sql = "INSERT IGNORE INTO Clients (name, phoneNumber) VALUES ('$receiver_name', '$receiver_tel')";
     mysqli_query($conn, $sql);
-
-    $currentDate = date("Y-m-d");
+    var_dump($weight);
+    var_dump($volume);
     // Вставка данных в таблицу Parcels
+    if ($weight != NULL || $volume != NULL) {
+        $bill = new Bill($weight, $volume, $pickup_address, $delivery_address);
+        $price = $bill->calculatePrice();
+        $finalMessage = "<h2>Зарегистрирована посылка ". $bill->from_city. " > ". $bill->to_city .". Сумма к оплате: $price</h2>";
+    }
+    else {
+        $price = 'NULL';
+        $weight = 'NULL';
+        $volume = 'NULL';
+        $finalMessage = "<h2>Посылка зарегистрирована. Сумма к оплате будет расчитана после регистрации посылки в отделении</h2>";
+    }
     $sql = "INSERT INTO Parcels (status, weight, volume, sender_id, receiver_id, address_from, address_to, sent, shipped, pickup, delivery, price) 
-            SELECT 'Ожидает курьера', NULL, NULL, 
+            SELECT 'Ожидает курьера', $weight, $volume, 
                 (SELECT id FROM Clients WHERE name = '$sender_name'), 
                 (SELECT id FROM Clients WHERE name = '$receiver_name'), 
-                '$pickup_address', '$delivery_address','$currentDate' , NULL, 1, 0, 666";
+                '$pickup_address', '$delivery_address',NULL, NULL, 1, 0, $price";
     mysqli_query($conn, $sql);
     var_dump($sql);
+
+//    if ($weight != NULL || $volume != NULL) {
+//        echo "<h2>Зарегистрирована посылка ". $bill->from_city. " > ". $bill->to_city .". Сумма к оплате: $price</h2>";
+//    }
+//    else {
+//        "<h2>Посылка зарегистрирована. Сумма к оплате будет расчитана после регистрации посылки в отделении</h2>";
+//    }
+    echo $finalMessage;
 }
