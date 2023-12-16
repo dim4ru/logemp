@@ -70,9 +70,9 @@ if (!isset($_SESSION['tel'])) {
             echo "У вас нет входящих или исходящих посылок.";
         }
 
-//        $bill = new Bill(1, 1, "Омск", "Мурманск");
-//        $price = $bill->calculatePrice();
-//        echo $price;
+        $bill = new Bill(1, 1, "Омск", "Москва", 1);
+        $price = $bill->calculatePrice();
+        echo $price;
 
         echo "<h3>Новая посылка</h3>";
         echo <<<HTML

@@ -15,8 +15,11 @@ class Bill
     public $from_city;
     public $to_city;
 
+    // int: 0 - оба самовывоза; 1 - забор/доставка; 2 - забор и доставка
+    public $courier;
+
     // Конструктор класса для установки начальных значений атрибутов
-    public function __construct($weight, $volume, $from_address, $to_address)
+    public function __construct($weight, $volume, $from_address, $to_address, $courier)
     {
 
         // Если $from_address содержит название города
@@ -40,6 +43,7 @@ class Bill
 //        $this->parcel_id = $parcel_id;
         $this->weight = $weight;
         $this->volume = $volume;
+        $this->courier = $courier;
     }
 
     // Другие методы класса могут быть добавлены здесь
@@ -52,7 +56,7 @@ class Bill
         } else {
             $distance = $routeWest[$this->from_city] - $routeWest[$this->to_city];
         }
-        $price = $this->weight * $this->volume * $distance * 0.058 + 0;
+        $price = $this->weight * $this->volume * $distance * 0.058 + $this->courier*300;
         return $price;
     }
 }
