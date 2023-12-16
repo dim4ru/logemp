@@ -70,9 +70,9 @@ if (!isset($_SESSION['tel'])) {
             echo "У вас нет входящих или исходящих посылок.";
         }
 
-
         echo "<h3>Новая посылка</h3>";
         echo <<<HTML
+        <b>Данные отправителя</b><br>
         <form action="client_insert_parcel_handler.php" method="POST">
             <label for="sender_name">ФИО отправителя:</label><br>
             <input type="text" id="sender_name" name="sender_name" value="
@@ -89,15 +89,16 @@ HTML;
             <label for="pickup_address">Адрес, откуда забрать посылку:</label>
             <input type="text" id="pickup_address" name="pickup_address" placeholder="напр. улица 70 лет Октября, 3/1, кв 101, Омск, 644074"><br>
         
+            <br><b>Данные получателя</b>
+            <p style="font-size: 14px"><i>Адрес для доставки нужно только указать один:<br>либо адрес доставки на дом (+300р к стоимости), либо выбрать пункт выдачи для самовывоза.<br>В случае заполнения двух полей, будет выбрана опция самовывоза.</i></p>
             <label for="receiver_name">ФИО получателя:</label><br>
             <input type="text" id="receiver_name" name="receiver_name" placeholder="Фамилия Имя Отчество" required><br>
             <label for="receiver_tel">Номер телефона получателя:</label><br>
             <input type="tel" id="receiver_tel" name="receiver_tel" placeholder="Без +7 (напр.9991234566)" maxlength="10"><br>
         
-            <br>
-            <label for="delivery_address">Адрес вручения для доставки на дом:</label>
+            <label for="delivery_address">Адрес вручения для доставки на дом (+ 300 р):</label>
             <input type="text" id="delivery_address" name="delivery_address" placeholder="напр. улица 70 лет Октября, 3/1, кв 101, Омск, 644074"><br>
-            <label for="destination_office"><b>или</b><br>Выбрать отделение для самовывоза:</label>
+            <label for="destination_office"><b>или</b><br>Выбрать отделение для самовывоза (бесплатно):</label>
             <select id="destination_office" name="destination_office">
 HTML;
 
@@ -108,11 +109,13 @@ HTML;
         echo <<<HTML
             </select>
             <br><br>
-        
-            <label for="weight">Вес, кг (оставьте пустым, если не знаете):</label><br>
+            
+            <b>Параметры посылки</b><br>
+            <p style="font-size: 14px"><i>Оставьте оба поля пустыми, если не знаете параметров.<br>Тогда стоимость посылки будет расчитана после ее регистрации в отделении</i></p>
+            <label for="weight">Вес, кг:</label><br>
             <input type="number" step="0.001" id="weight" name="weight" ><br>
         
-            <label for="volume">Объем, м2 (оставьте пустым, если не знаете):</label><br>
+            <label for="volume">Объем, м2:</label><br>
             <input type="number" step="0.001" id="volume" name="volume"><br>
             
             <br>

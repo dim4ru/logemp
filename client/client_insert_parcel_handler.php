@@ -21,11 +21,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
     $sql = "INSERT IGNORE INTO Clients (name, phoneNumber) VALUES ('$receiver_name', '$receiver_tel')";
     mysqli_query($conn, $sql);
-    var_dump($weight);
-    var_dump($volume);
-    // Вставка данных в таблицу Parcels
+
+// Вставка данных в таблицу Parcels
     if ($weight != NULL || $volume != NULL) {
-        $bill = new Bill($weight, $volume, $pickup_address, $delivery_address);
+        $bill = ($destination_office == NULL) ? new Bill($weight, $volume, $pickup_address, $delivery_address) : new Bill($weight, $volume, $pickup_address, $destination_office);
         $price = $bill->calculatePrice();
         $finalMessage = "<h2>Зарегистрирована посылка ". $bill->from_city. " > ". $bill->to_city .". Сумма к оплате: $price</h2>";
     }
@@ -36,18 +35,16 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $finalMessage = "<h2>Посылка зарегистрирована. Сумма к оплате будет расчитана после регистрации посылки в отделении</h2>";
     }
     $sql = "INSERT INTO Parcels (status, weight, volume, sender_id, receiver_id, address_from, address_to, sent, shipped, pickup, delivery, price) 
-            SELECT 'Ожидает курьера', $weight, $volume, 
-                (SELECT id FROM Clients WHERE name = '$sender_name'), 
-                (SELECT id FROM Clients WHERE name = '$receiver_name'), 
-                '$pickup_address', '$delivery_address',NULL, NULL, 1, 0, $price";
-    mysqli_query($conn, $sql);
+        SELECT 'Ожидает курьера', $weight, $volume, 
+            (SELECT id FROM Clients WHERE name = '$sender_name' LIMIT 1), 
+            (SELECT id FROM Clients WHERE name = '$receiver_name' LIMIT 1), 
+            '$pickup_address', '$destination_office',NULL, NULL, 1, 0, $price";
+    $result = mysqli_query($conn, $sql);
     var_dump($sql);
 
-//    if ($weight != NULL || $volume != NULL) {
-//        echo "<h2>Зарегистрирована посылка ". $bill->from_city. " > ". $bill->to_city .". Сумма к оплате: $price</h2>";
-//    }
-//    else {
-//        "<h2>Посылка зарегистрирована. Сумма к оплате будет расчитана после регистрации посылки в отделении</h2>";
-//    }
-    echo $finalMessage;
+    if (!$result) {
+        echo "<h2>Ошибка при выполнении запроса: " . mysqli_error($conn) . "</h2>";
+    } else {
+        echo $finalMessage;
+    }
 }
