@@ -46,7 +46,12 @@ class Bill
     public function calculatePrice()
     {
         global $routeWest;
-        $distance = $routeWest[$this->to_city] - $routeWest[$this->from_city];
+        if ($routeWest[$this->to_city] > $routeWest[$this->from_city]){
+            $distance = $routeWest[$this->to_city] - $routeWest[$this->from_city];
+
+        } else {
+            $distance = $routeWest[$this->from_city] - $routeWest[$this->to_city];
+        }
         $price = $this->weight * $this->volume * $distance * 0.058 + 0;
         return $price;
     }
