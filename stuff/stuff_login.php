@@ -20,7 +20,7 @@
             }
 
             // Выполняем запрос к базе данных, чтобы получить имена сотрудников
-            $sql = "SELECT name FROM Stuff";
+            $sql = "SELECT name FROM Stuff ORDER BY name ASC";
             $result = $conn->query($sql);
 
             // Если есть хотя бы одна строка в результате

@@ -1,7 +1,6 @@
 <?php
 // Подключение к базе данных
-$conn = new mysqli('hostname', 'username', 'password', 'dbname');
-
+include "../connection.php";
 if ($conn->connect_error) {
     die("Ошибка соединения: " . $conn->connect_error);
 }
@@ -29,7 +28,7 @@ if (!$_SERVER["REQUEST_METHOD"] == "POST") {
 
             // Начало сессии и сохранение имени сотрудника
             session_start();
-            $_SESSION["selected_user"] = $selected_user;
+            $_SESSION["user"] = $selected_user;
 
             // Перенаправление в зависимости от должности
             if ($jobTitle === "Курьер") {
