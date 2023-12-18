@@ -82,32 +82,55 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         // Обрабатываем результаты запроса
         if ($result->num_rows > 0) {
             ?>
+            <!-- Первая таблица: откуда -->
             <table>
                 <tr>
                     <th>ID</th>
                     <th>Вес</th>
                     <th>Объем</th>
                     <th>Откуда</th>
-                    <th>Куда</th>
                 </tr>
                 <?php
+                $result->data_seek(0); // сбросить указатель результата, чтобы начать сначала
                 while($row = $result->fetch_assoc()) {
-                    // Проверяем, содержит ли адрес "откуда" или "куда" выбранный город
-                    if (findCityInString($row["address_from"], $cityArray) == $selectedCity ||
-                        findCityInString($row["address_to"], $cityArray) == $selectedCity) {
-                        // Выводим результаты запроса в виде таблицы
+                    if (findCityInString($row["address_from"], $cityArray) == $selectedCity) {
                         ?>
                         <tr>
                             <td><?php echo $row["id"]; ?></td>
                             <td><?php echo $row["weight"]; ?></td>
                             <td><?php echo $row["volume"]; ?></td>
                             <td><?php echo findCityInString($row["address_from"], $cityArray); ?></td>
+                        </tr>
+                        <?php
+                    }
+                }
+                ?>
+            </table>
+
+            <?php
+
+            ?>
+
+            <!-- Вторая таблица: куда -->
+            <table>
+                <tr>
+                    <th>ID</th>
+                    <th>Вес</th>
+                    <th>Объем</th>
+                    <th>Куда</th>
+                </tr>
+                <?php
+                $result->data_seek(0); // сбросить указатель результата, чтобы начать сначала
+                while($row = $result->fetch_assoc()) {
+                    if (findCityInString($row["address_to"], $cityArray) == $selectedCity) {
+                        ?>
+                        <tr>
+                            <td><?php echo $row["id"]; ?></td>
+                            <td><?php echo $row["weight"]; ?></td>
+                            <td><?php echo $row["volume"]; ?></td>
                             <td><?php echo findCityInString($row["address_to"], $cityArray); ?></td>
                         </tr>
                         <?php
-                    } else {
-                        // Переходим к следующей итерации цикла
-                        continue;
                     }
                 }
                 ?>
