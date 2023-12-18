@@ -4,8 +4,6 @@
     <title>Авторизация сотрудника</title>
 </head>
 <body>
-<a href="../stuff_logout.php" style="position: absolute; top: 10px; right: 10px;">Выход</a>
-
 <form action="stuff_login_handler.php" method="post">
     <div>
         <label for="stuff_user">Выберите пользователя:</label>
