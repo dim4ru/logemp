@@ -152,18 +152,6 @@ function clientNameById ($conn, $_client_id)
         // Теперь $sender_name содержит имя отправителя
     }
 }
-
-function receiverNameById ($conn, $receiver_id)
-{
-    $sql_receiver_name = "SELECT name FROM Clients WHERE id = '$receiver_id'";
-    $result_receiver_name = $conn->query($sql_receiver_name);
-    // Предполагается, что $result_sender_name содержит результат вашего запроса
-    if (mysqli_num_rows($result_receiver_name) > 0) {
-        $receiver_data = mysqli_fetch_assoc($result_receiver_name);
-        return $receiver_name = $receiver_data["name"];
-    }
-}
-
 function getOfficesList($conn)
 {
     // Формируем запрос к базе данных
