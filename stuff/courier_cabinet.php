@@ -9,6 +9,14 @@
         text-align: left;
         border-bottom: 1px solid #ddd;
     }
+    tr:hover {
+        background-color: #dddddd;
+    }
+    .header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
 </style>
 
 <?php
@@ -20,11 +28,23 @@ if (!isset($_SESSION['user'])) {
 }
 
 $name = $_SESSION['user'];
+echo "<div class='header'>";
 echo "<h1>Личный кабинет курьера $name</h1>";
+echo "<a href='../logout.php'>Выход</a>";
+echo "</div>";
+echo "<i>Выберите посылку для доставки. В поле <b>Task</b> вы видите задание, которое необходимо выполнить для продвижения посылки. После его выполнения нажмите кнопку <button>></button> и статус заказа сменится на следующий.</i>"
+?>
 
-// Вызов функции getAvailableParcels
-$statusArray = array('Ожидает курьера','Ожидает прибытия в отделение','Ожидает доставки на дом');
-getAvailableParcels($statusArray, $conn);
+<form method="post" action="courier_update_handler.php">
+    <?php
+    $statusArray = array('Ожидает курьера', 'Ожидает прибытия в отделение', 'Ожидает доставки на дом');
+    getAvailableParcels($statusArray, $conn);
+    ?>
+</form>
+
+<?php
+
+
 
 function checkNull($value) {
     return $value === null ? "-" : $value;
@@ -62,11 +82,11 @@ function getAvailableParcels($statusArray, $conn) {
 
     if ($result->num_rows > 0) {
         echo "<table>";
-        echo "<tr><th>ID</th><th>Sent</th><th>Pickup</th><th>Delivery</th><th>Address From</th><th>Address To</th><th>Weight</th><th>Volume</th><th>Status</th><th>To-do</th><th>Done</th></tr>";
+        echo "<tr><th>ID</th><th>Sent</th><th>Pickup</th><th>Delivery</th><th>Address From</th><th>Address To</th><th>Weight</th><th>Volume</th><th>Status</th><th>Task</th><th>Done</th></tr>";
         while ($row = $result->fetch_assoc()) {
             echo "<tr>";
             echo "<td>" . $row['id'] . "</td><td>" . checkNull($row['sent']) . "</td><td>" . getDeliveryIcon($row['pickup']) . "</td><td>" . getDeliveryIcon($row['delivery']) . "</td><td>" . $row['address_from'] . "</td><td>" . $row['address_to'] . "</td><td>" . checkNull($row['weight']) . "</td><td>" . checkNull($row['volume']) . "</td><td>" . $row['status'] . "</td><td>" . getInstructionsText($conn, $row) . "</td>";
-            echo "<td><button>></button></td>";
+            echo "<td><button name='parcel_id' type='submit' value='" . $row['id'] . "'>></button></td>";
             echo "</tr>";
         }
         echo "</table>";

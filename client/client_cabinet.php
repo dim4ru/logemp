@@ -36,7 +36,7 @@ if (!isset($_SESSION['tel'])) {
     header("Location: client_login.php");
 } else {
     $tel = $_SESSION['tel'];
-    echo "<div class='header'><h2>Личный кабинет клиента по номеру $tel</h2><a class='logout' href='client_logout.php'>Выход</a></div>";
+    echo "<div class='header'><h2>Личный кабинет клиента по номеру $tel</h2><a class='logout' href='../logout.php'>Выход</a></div>";
 
     // Проверяем соединение
     if ($conn->connect_error) {
