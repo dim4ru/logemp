@@ -77,7 +77,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     // Проверяем, чтобы выбранный город был выбран (не "Не выбрано")
     if ($selectedCity != "Не выбрано") {
         // Выполняем SQL запрос, используя выбранный город в качестве фильтра
-        $sql = "SELECT id, weight, volume, address_from, address_to FROM Parcels WHERE id IS NOT NULL AND weight IS NOT NULL AND volume IS NOT NULL AND address_from IS NOT NULL AND address_to IS NOT NULL;";
+        $sql = "SELECT id, weight, volume, address_from, address_to FROM Parcels WHERE id IS NOT NULL AND weight IS NOT NULL AND volume IS NOT NULL AND address_from IS NOT NULL AND address_to IS NOT NULL ORDER BY sent ASC;";
         $result = $conn->query($sql);
         // Обрабатываем результаты запроса
         if ($result->num_rows > 0) {
