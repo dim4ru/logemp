@@ -92,16 +92,23 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 </tr>
                 <?php
                 while($row = $result->fetch_assoc()) {
-                    // Выводим результаты запроса в виде таблицы
-                    ?>
-                    <tr>
-                        <td><?php echo $row["id"]; ?></td>
-                        <td><?php echo $row["weight"]; ?></td>
-                        <td><?php echo $row["volume"]; ?></td>
-                        <td><?php echo findCityInString($row["address_from"], $cityArray); ?></td>
-                        <td><?php echo findCityInString($row["address_to"], $cityArray); ?></td>
-                    </tr>
-                    <?php
+                    // Проверяем, содержит ли адрес "откуда" или "куда" выбранный город
+                    if (findCityInString($row["address_from"], $cityArray) == $selectedCity ||
+                        findCityInString($row["address_to"], $cityArray) == $selectedCity) {
+                        // Выводим результаты запроса в виде таблицы
+                        ?>
+                        <tr>
+                            <td><?php echo $row["id"]; ?></td>
+                            <td><?php echo $row["weight"]; ?></td>
+                            <td><?php echo $row["volume"]; ?></td>
+                            <td><?php echo findCityInString($row["address_from"], $cityArray); ?></td>
+                            <td><?php echo findCityInString($row["address_to"], $cityArray); ?></td>
+                        </tr>
+                        <?php
+                    } else {
+                        // Переходим к следующей итерации цикла
+                        continue;
+                    }
                 }
                 ?>
             </table>
