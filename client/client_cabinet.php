@@ -22,7 +22,11 @@
         margin-left: auto;
     }
 </style>
-
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Личный кабинет</title>
+</head>
 <?php
 include "../connection.php";
 include "../Bill.php";
@@ -185,3 +189,6 @@ function getOfficesList($conn)
         echo "0 результатов";
     }
 }
+?>
+</body>
+</html>

@@ -4,6 +4,8 @@
     <title>Авторизация</title>
 </head>
 <body>
+<a href="../stuff/stuff_login.php" style="position: absolute; top: 10px; right: 10px;">Авторизация сотрудника</a>
+
 <form action="client_login_handler.php" method="post">
     <div>
         <label for="tel">Номер телефона:</label>
