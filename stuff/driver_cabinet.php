@@ -146,8 +146,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
                 // Вывод строк таблицы, пока суммы веса или объема не будут достигнуты
                 while($row = $result->fetch_assoc()) {
-                    var_dump($row["status"]);
-
                         if ((findCityInString($row["address_from"], $cityArray) == $selectedCity) && $row["status"] == 'В отделении') {
                             if (($totalWeight + $row["weight"] + $currentLoadWeight) > $maxWeight || ($totalVolume + $row["volume"] + $currentLoadVolume) > $maxVolume) {
                                 continue; // Прерываем цикл, если суммы веса или объема достигли максимальных значений
@@ -172,8 +170,13 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             <?php
             echo "<p>Загружено сейчас: $currentLoadWeight кг $currentLoadVolume м3<br>";
             echo "Доступно для загрузки: <b>" . ($maxWeight - $currentLoadWeight) . " кг " . ($maxVolume - $currentLoadVolume) . " м3</b></p>";
-
             ?>
+
+            <form action="load_parcels_landler.php" method="post">
+                <label for="loadInput">Введите ID посылок для загрузки, разделяя их пробелами:</label><br>
+                <input type="text" id="loadInput" name="loadInput" placeholder="Например: 1 5 24 9 533 3 " required>
+                <input type="submit" value="Загрузить">
+            </form>
 
             <!-- Вторая таблица: куда -->
             <h3>Посылки на отгрузку в городе <?php echo htmlspecialchars($selectedCity); ?> </h3>
