@@ -21,6 +21,11 @@
 <?php
 include "../connection.php";
 session_start();
+// Проверяем, активна ли сессия
+if (!isset($_SESSION['user'])) {
+    // Сессия не содержит информацию о пользователе
+    header("Location: ../index.php");
+}
 $name = $_SESSION['user'];
 echo "<div class='header'>";
 echo "<h1>Личный кабинет экспедитора $name</h1>";
