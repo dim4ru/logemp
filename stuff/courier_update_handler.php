@@ -51,7 +51,7 @@ function updateCourierTask($id) {
         case "Ожидает доставки на дом":
             // Выполняем запрос UPDATE Parcels SET status='Доставлена' WHERE id = '$id'
             // Выполнение SQL запроса на обновление
-            $sql = "UPDATE Parcels SET status='Доставлена' WHERE id = '$id'";
+            $sql = "UPDATE Parcels SET status='Доставлена', shipped=NOW() WHERE id = '$id'";
 
             if ($conn->query($sql) === TRUE) {
                 echo "Статус для посылки $id успешно обновлен на $currentStatus";
