@@ -9,7 +9,7 @@ function extractCities($addresses) {
     return $cities;
 }
 
-function extractСity($address) {
+function extractCity($address) {
     $parts = explode(',', $address);
     $city = trim($parts[count($parts) - 2]); // Получаем предпоследний элемент после разделения по запятой и убираем пробелы
     return $city;

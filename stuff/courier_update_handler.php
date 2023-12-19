@@ -29,7 +29,7 @@ function updateCourierTask($id) {
         case "Ожидает курьера":
             // Выполняем запрос UPDATE Parcels SET status='Ожидает прибытия в отделение' WHERE id = '$id'
             // Выполнение SQL запроса на обновление
-            $sql = "UPDATE Parcels SET status='Ожидает прибытия в отделение' WHERE id = '$id'";
+            $sql = "UPDATE Parcels SET status='Ожидает прибытия в отделение', sent=NOW() WHERE id = '$id'";
 
             if ($conn->query($sql) === TRUE) {
                 echo "Статус для посылки $id успешно обновлен на $currentStatus";
@@ -65,3 +65,6 @@ function updateCourierTask($id) {
     }
 }
 header("Location: courier_cabinet.php");
+//UPDATE `Parcels` SET `status`='[value-2]',`sent`='[value-9]' WHERE id = '$id'
+
+//Ожидает прибытия в отделение
