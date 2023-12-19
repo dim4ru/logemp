@@ -10,5 +10,5 @@ session_destroy();
 
 // Перенаправление пользователя на другую страницу или вывод сообщения о успешном выходе
 // Например:
-header("Location: ../index.php");
+header("Location: /index.php");
 exit;

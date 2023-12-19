@@ -36,6 +36,9 @@
 
             ?>
         </select>
+        <br>
+        <label for="password">Пароль:</label>
+        <input type="password" id="password" name="password" maxlength="10">
     </div>
     <button type="submit">Войти</button>
 </form>

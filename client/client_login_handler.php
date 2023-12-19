@@ -6,11 +6,10 @@ if ($conn->connect_error) {
     die("Ошибка подключения: " . $conn->connect_error);
 }
 
-// Начинаем сессию или возобновляем существующую
-session_start();
-
 // Проверяем, были ли переданы данные из формы
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
+    // Начинаем сессию или возобновляем существующую
+    session_start();
     // Здесь должна быть логика проверки логина и пароля
     $tel = $_POST['tel'];
     $password = $_POST['password'];
