@@ -172,7 +172,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             echo "Доступно для загрузки: <b>" . ($maxWeight - $currentLoadWeight) . " кг " . ($maxVolume - $currentLoadVolume) . " м3</b></p>";
             ?>
 
-            <form action="load_parcels_landler.php" method="post">
+            <form action="load_parcels_handler.php" method="post">
                 <label for="loadInput">Введите ID посылок для загрузки, разделяя их пробелами:</label><br>
                 <input type="text" id="loadInput" name="loadInput" placeholder="Например: 1 5 24 9 533 3 " required>
                 <input type="submit" value="Загрузить">
@@ -203,7 +203,13 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 }
                 ?>
             </table>
+            <form action="unload_parcels_handler.php" method="post">
+                <label for="unloadInput">Введите ID посылок для отгрузки, разделяя их пробелами:</label><br>
+                <input type="text" id="unloadInput" name="unloadInput" placeholder="Например: 1 5 24 9 533 3 " required>
+                <input type="submit" value="Отгрузить">
+            </form>
             <?php
+            // тут форма
         } else {
             echo "0 результатов";
         }
