@@ -131,7 +131,7 @@ function getAvailableParcels($statusArray, $conn)
 
     if ($result->num_rows > 0) {
         echo "<table>";
-        echo "<tr><th>ID</th><th>Sent</th><th>Pickup</th><th>Delivery</th><th>Address From</th><th>Address To</th><th>Weight</th><th>Volume</th><th>Status</th><th>Task</th><th>Done</th></tr>";
+        echo "<tr><th>ID</th><th>Отправлено</th><th>Забрать</th><th>Доставить</th><th>Откуда</th><th>Куда</th><th>Вес, кг</th><th>Объем, м3</th><th>Статус</th><th>Этап</th><th>Готово</th></tr>";
         while ($row = $result->fetch_assoc()) {
             if (
                 (
