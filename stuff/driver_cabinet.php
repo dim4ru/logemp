@@ -148,7 +148,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 while($row = $result->fetch_assoc()) {
                     var_dump($row["status"]);
 
-                        if (findCityInString($row["address_from"], $cityArray) == $selectedCity) {
+                        if ((findCityInString($row["address_from"], $cityArray) == $selectedCity) && $row["status"] == 'В отделении') {
                             if (($totalWeight + $row["weight"] + $currentLoadWeight) > $maxWeight || ($totalVolume + $row["volume"] + $currentLoadVolume) > $maxVolume) {
                                 continue; // Прерываем цикл, если суммы веса или объема достигли максимальных значений
                             } else {
