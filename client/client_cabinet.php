@@ -95,14 +95,14 @@ HTML;
         echo <<<HTML
 " readonly required><br>
             <label for="pickup_address">Адрес, откуда забрать посылку:</label>
-            <input type="text" id="pickup_address" name="pickup_address" placeholder="напр. улица 70 лет Октября, 3/1, кв 101, Омск, 644074"><br>
+            <input type="text" id="pickup_address" name="pickup_address" placeholder="напр. улица 70 лет Октября, 3/1, кв 101, Омск, 644074" required><br>
         
             <br><b>Данные получателя</b>
             <p style="font-size: 14px"><i>Адрес для доставки нужно только указать один:<br>либо адрес доставки на дом (+300р к стоимости), либо выбрать пункт выдачи для самовывоза.<br>В случае заполнения двух полей, будет выбрана опция самовывоза.</i></p>
             <label for="receiver_name">ФИО получателя:</label><br>
             <input type="text" id="receiver_name" name="receiver_name" placeholder="Фамилия Имя Отчество" required><br>
             <label for="receiver_tel">Номер телефона получателя:</label><br>
-            <input type="tel" id="receiver_tel" name="receiver_tel" placeholder="Без +7 (напр.9991234566)" maxlength="10"><br>
+            <input type="tel" id="receiver_tel" name="receiver_tel" placeholder="Без +7 (напр.9991234566)" maxlength="10" required><br>
         
             <label for="delivery_address">Адрес вручения для доставки на дом (+ 300 р):</label>
             <input type="text" id="delivery_address" name="delivery_address" placeholder="напр. улица 70 лет Октября, 3/1, кв 101, Омск, 644074"><br>
@@ -121,10 +121,10 @@ HTML;
             <b>Параметры посылки</b><br>
             <p style="font-size: 14px"><i>Оставьте оба поля пустыми, если не знаете параметров.<br>Тогда стоимость посылки будет расчитана после ее регистрации в отделении</i></p>
             <label for="weight">Вес, кг:</label><br>
-            <input type="number" step="0.001" id="weight" name="weight" ><br>
+            <input type="number" step="0.001" id="weight" name="weight" max="700"><br>
         
             <label for="volume">Объем, м2:</label><br>
-            <input type="number" step="0.001" id="volume" name="volume"><br>
+            <input type="number" step="0.001" id="volume" name="volume" max="4"><br>
             
             <br>
             
