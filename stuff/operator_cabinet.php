@@ -34,6 +34,12 @@ echo "<h1>Личный кабинет оператора отделения $nam
 echo "<a href='../logout.php'>Выход</a>";
 echo "</div>";
 
+echo "<h2>Изменить сведения о посылке по ID</h2>";
+echo "<form action='operator_update_parcel.php' method='post'>";
+echo "<label for='id'>ID посылки:</label>";
+echo "<input type='text' id='id' name='id'>";
+echo "<input type='submit' value='Редактировать'>";
+echo "</form>";
 // Проверяем подключение к базе данных
 if ($conn->connect_error) {
     die("Connection failed: " . $conn->connect_error);
