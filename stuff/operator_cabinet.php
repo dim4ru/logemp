@@ -33,7 +33,7 @@ echo "<div class='header'>";
 echo "<h1>Личный кабинет оператора отделения $name</h1>";
 echo "<a href='../logout.php'>Выход</a>";
 echo "</div>";
-
+echo "<a href='operator_new_parcel.php'>Новая посылка</a>";
 echo "<h2>Изменить сведения о посылке по ID</h2>";
 echo "<form action='operator_update_parcel.php' method='post'>";
 echo "<label for='id'>ID посылки:</label>";
