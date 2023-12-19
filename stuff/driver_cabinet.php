@@ -38,11 +38,11 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $sqlDispatch = "SELECT parcel_id FROM car_load WHERE car_id = (SELECT car_id FROM Stuff WHERE name = '$name')";
     $resultDispatch = $conn->query($sqlDispatch);
 
-    $dispatchParcelsId = array(); // Создаем массив для хранения id посылок на отгрузку
+    $toDispatchParcelsId = array(); // Создаем массив для хранения id посылок на отгрузку
 
     if ($resultDispatch->num_rows > 0) {
         while ($row = $resultDispatch->fetch_assoc()) {
-            $dispatchParcelsId[] = $row["parcel_id"]; // Добавляем id посылок в массив
+            $toDispatchParcelsId[] = $row["parcel_id"]; // Добавляем id посылок в массив
         }
     }
 }
@@ -51,6 +51,8 @@ echo "<div class='header'>";
 echo "<h1>Личный кабинет экспедитора $name</h1>";
 echo "<a href='../logout.php'>Выход</a>";
 echo "</div>";
+
+
 
 // Проверка подключения
 if ($conn->connect_error) {
@@ -102,7 +104,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     // Проверяем, чтобы выбранный город был выбран (не "Не выбрано")
     if ($selectedCity != "Не выбрано") {
         // Выполняем SQL запрос, используя выбранный город в качестве фильтра
-        $sql = "SELECT id, weight, volume, address_from, address_to FROM Parcels WHERE id IS NOT NULL AND weight IS NOT NULL AND volume IS NOT NULL AND address_from IS NOT NULL AND address_to IS NOT NULL ORDER BY sent ASC;";
+        $sql = "SELECT id, weight, volume, address_from, address_to, status FROM Parcels WHERE id IS NOT NULL AND weight IS NOT NULL AND volume IS NOT NULL AND address_from IS NOT NULL AND address_to IS NOT NULL ORDER BY sent ASC;";
         $result = $conn->query($sql);
         // Обрабатываем результаты запроса
         if ($result->num_rows > 0) {
@@ -118,22 +120,58 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 </tr>
                 <?php
                 $result->data_seek(0); // сбросить указатель результата, чтобы начать сначала
+                // Инициализация суммы веса и объема
+                $currentWeight = 0;
+                $currentCapacity = 0;
+                $totalWeight = 0;
+                $totalVolume = 0;
+
+                $currentLoad = getCurrentLoad($conn, $name);
+                $currentLoadWeight = $currentLoad["currentLoadWeight"];
+                $currentLoadVolume = $currentLoad["currentLoadVolume"];
+
+                // Запрос к базе данных
+                $Max_sql = "SELECT maxWeight, capacity FROM Cars WHERE id = (SELECT car_id FROM Stuff WHERE name = '$name')";
+                $Max_result = $conn->query($Max_sql);
+
+                if ($Max_result->num_rows > 0) {
+                    // Вывод данных каждой строки
+                    while($row = $Max_result->fetch_assoc()) {
+                        $maxWeight = $row["maxWeight"];
+                        $maxVolume = $row["capacity"];
+                    }
+                } else {
+                    echo "Нет данных по максимальной грузоподъемности и вместимости";
+                }
+
+                // Вывод строк таблицы, пока суммы веса или объема не будут достигнуты
                 while($row = $result->fetch_assoc()) {
-                    if (findCityInString($row["address_from"], $cityArray) == $selectedCity) {
-                        ?>
-                        <tr>
-                            <td><?php echo $row["id"]; ?></td>
-                            <td><?php echo $row["weight"]; ?></td>
-                            <td><?php echo $row["volume"]; ?></td>
-                            <td><?php echo findCityInString($row["address_from"], $cityArray); ?></td>
-                        </tr>
-                        <?php
+                    var_dump($row["status"]);
+
+                        if (findCityInString($row["address_from"], $cityArray) == $selectedCity) {
+                            if (($totalWeight + $row["weight"] + $currentLoadWeight) > $maxWeight || ($totalVolume + $row["volume"] + $currentLoadVolume) > $maxVolume) {
+                                continue; // Прерываем цикл, если суммы веса или объема достигли максимальных значений
+                            } else {
+                                // Обновление сумм веса и объема
+                                $totalWeight += $row["weight"];
+                                $totalVolume += $row["volume"];
+                            ?>
+                            <tr>
+                                <td><?php echo $row["id"]; ?></td>
+                                <td><?php echo $row["weight"]; ?></td>
+                                <td><?php echo $row["volume"]; ?></td>
+                                <td><?php echo findCityInString($row["address_from"], $cityArray); ?></td>
+                            </tr>
+                            <?php
+                        }
                     }
                 }
                 ?>
             </table>
 
             <?php
+            echo "<p>Загружено сейчас: $currentLoadWeight кг $currentLoadVolume м3<br>";
+            echo "Доступно для загрузки: <b>" . ($maxWeight - $currentLoadWeight) . " кг " . ($maxVolume - $currentLoadVolume) . " м3</b></p>";
 
             ?>
 
@@ -149,7 +187,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 <?php
                 $result->data_seek(0); // сбросить указатель результата, чтобы начать сначала
                 while($row = $result->fetch_assoc()) {
-                    if ((findCityInString($row["address_to"], $cityArray) == $selectedCity) && (in_array($row["id"],$dispatchParcelsId))) {
+                    if ((findCityInString($row["address_to"], $cityArray) == $selectedCity) && (in_array($row["id"],$toDispatchParcelsId))) {
                         ?>
                         <tr>
                             <td><?php echo $row["id"]; ?></td>
@@ -168,5 +206,36 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         }
     } else {
         echo "Город не выбран";
+    }
+}
+
+function getCurrentLoad($conn, $name) {
+    // Проверка соединения
+    if ($conn->connect_error) {
+        die("Connection failed: " . $conn->connect_error);
+    }
+
+    // Запрос к базе данных
+    $load_sql = "SELECT 
+                SUM(weight) AS currentLoadWeight,
+                SUM(volume) AS currentLoadVolume
+            FROM Parcels
+            WHERE id IN (SELECT parcel_id FROM car_load WHERE car_id = (SELECT car_id FROM Stuff WHERE name = '$name'))";
+
+    $load_result = $conn->query($load_sql);
+
+    // Обработка результатов запроса
+    if ($load_result->num_rows > 0) {
+        // Получение данных из результата запроса
+        $row = $load_result->fetch_assoc();
+        $currentLoadWeight = $row["currentLoadWeight"];
+        $currentLoadVolume = $row["currentLoadVolume"];
+
+        // Возвращение полученных значений
+        return array("currentLoadWeight" => $currentLoadWeight, "currentLoadVolume" => $currentLoadVolume);
+    } else {
+
+        // Возвращение значений по умолчанию, если ничего не найдено
+        return array("currentLoadWeight" => 0, "currentLoadVolume" => 0);
     }
 }
