@@ -36,11 +36,12 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $finalMessage = "<h2>Посылка зарегистрирована. Сумма к оплате будет расчитана после регистрации посылки в отделении</h2>";
     }
     $destination_address = ($destination_office !== "Не выбрано") ? $destination_office : $delivery_address;
+    $deliveryRequired = ($destination_office !== "Не выбрано") ? 0 : 1;
     $sql = "INSERT INTO Parcels (status, weight, volume, sender_id, receiver_id, address_from, address_to, sent, shipped, pickup, delivery, price) 
         SELECT 'Ожидает курьера', $weight, $volume, 
             (SELECT id FROM Clients WHERE name = '$sender_name' LIMIT 1), 
             (SELECT id FROM Clients WHERE name = '$receiver_name' LIMIT 1), 
-            '$pickup_address', '$destination_address',NULL, NULL, 1, 0, $price";
+            '$pickup_address', '$destination_address',NULL, NULL, 1, $deliveryRequired, $price";
     $result = mysqli_query($conn, $sql);
     var_dump($sql);
 
