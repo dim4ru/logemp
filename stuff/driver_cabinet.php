@@ -27,6 +27,26 @@ if (!isset($_SESSION['user'])) {
     header("Location: ../index.php");
 }
 $name = $_SESSION['user'];
+
+if ($_SERVER["REQUEST_METHOD"] == "POST") {
+    // Получаем выбранный город из формы
+    $selectedCity = $_POST['selectedCity'];
+
+    // ... (ваш предыдущий код)
+
+    // Выполняем SQL запрос для получения списка id посылок на отгрузку
+    $sqlDispatch = "SELECT parcel_id FROM car_load WHERE car_id = (SELECT car_id FROM Stuff WHERE name = '$name')";
+    $resultDispatch = $conn->query($sqlDispatch);
+
+    $dispatchParcelsId = array(); // Создаем массив для хранения id посылок на отгрузку
+
+    if ($resultDispatch->num_rows > 0) {
+        while ($row = $resultDispatch->fetch_assoc()) {
+            $dispatchParcelsId[] = $row["parcel_id"]; // Добавляем id посылок в массив
+        }
+    }
+}
+
 echo "<div class='header'>";
 echo "<h1>Личный кабинет экспедитора $name</h1>";
 echo "<a href='../logout.php'>Выход</a>";
@@ -88,6 +108,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         if ($result->num_rows > 0) {
             ?>
             <!-- Первая таблица: откуда -->
+            <h3>Посылки на загрузку в городе <?php echo htmlspecialchars($selectedCity); ?> </h3>
             <table>
                 <tr>
                     <th>ID</th>
@@ -117,6 +138,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             ?>
 
             <!-- Вторая таблица: куда -->
+            <h3>Посылки на отгрузку в городе <?php echo htmlspecialchars($selectedCity); ?> </h3>
             <table>
                 <tr>
                     <th>ID</th>
@@ -127,7 +149,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 <?php
                 $result->data_seek(0); // сбросить указатель результата, чтобы начать сначала
                 while($row = $result->fetch_assoc()) {
-                    if (findCityInString($row["address_to"], $cityArray) == $selectedCity) {
+                    if ((findCityInString($row["address_to"], $cityArray) == $selectedCity) && (in_array($row["id"],$dispatchParcelsId))) {
                         ?>
                         <tr>
                             <td><?php echo $row["id"]; ?></td>
