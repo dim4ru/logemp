@@ -27,7 +27,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     if ($weight != NULL || $volume != NULL) {
         $bill = ($destination_office == "Не выбрано") ? new Bill($weight, $volume, $pickup_address, $delivery_address, $courier) : new Bill($weight, $volume, $pickup_address, $destination_office, $courier);
         $price = $bill->calculatePrice();
-        $finalMessage = "<h2>Зарегистрирована посылка ". $bill->from_city. " > ". $bill->to_city .". Сумма к оплате: $price</h2>";
+        $finalMessage = "<h2>Зарегистрирована посылка ". $bill->from_city. " > ". $bill->to_city ."</h2>";
     }
     else {
         $price = 'NULL';
@@ -43,11 +43,59 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             (SELECT id FROM Clients WHERE name = '$receiver_name' LIMIT 1), 
             '$pickup_address', '$destination_address',NULL, NULL, 1, $deliveryRequired, $price";
     $result = mysqli_query($conn, $sql);
-    var_dump($sql);
+//    var_dump($sql);
 
     if (!$result) {
         echo "<h2>Ошибка при выполнении запроса: " . mysqli_error($conn) . "</h2>";
     } else {
         echo $finalMessage;
+        ?>
+        <!DOCTYPE html>
+        <html lang="ru">
+        <head>
+            <meta charset="UTF-8">
+            <meta name="viewport" content="width=device-width, initial-scale=1.0">
+            <title>Накладная</title>
+            <style>
+                body {
+                    font-family: monospace;
+                }
+                .container {
+                    border: 2px solid #000;
+                    padding: 20px;
+                    max-width: 400px;
+                    margin: 0 auto;
+                }
+                h2 {
+                    text-align: center;
+                }
+                .details {
+                    margin-top: 20px;
+                }
+                .label {
+                    font-weight: bold;
+                }
+            </style>
+        </head>
+        <body>
+        <div class="container">
+            <h2>Накладная</h2>
+            <div class="details">
+                <p><span class="label">Имя отправителя:</span> <?php echo $sender_name; ?></p>
+                <p><span class="label">Телефон отправителя:</span> <?php echo $sender_tel; ?></p>
+                <p><span class="label">Адрес отправки:</span> <?php echo $pickup_address; ?></p>
+                <p><span class="label">Имя получателя:</span> <?php echo $receiver_name; ?></p>
+                <p><span class="label">Телефон получателя:</span> <?php echo $receiver_tel; ?></p>
+                <p><span class="label">Адрес доставки:</span> <?php if (!empty($delivery_address)) echo $delivery_address; else echo "-"; ?></p>
+                <p><span class="label">Пункт выдачи:</span> <?php if (!empty($destination_office)) echo $destination_office; else echo "-"; ?></p>
+                <p><span class="label">Вес посылки:</span> <?php echo $weight; ?></p>
+                <p><span class="label">Объем посылки:</span> <?php echo $volume; ?></p>
+            </div>
+
+            <h2>Сумма к оплате: <?php echo $price; ?></h2>
+        </div>
+        </body>
+        </html>
+<?php
     }
 }
